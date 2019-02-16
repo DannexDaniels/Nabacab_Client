@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Nab A Cab</string>
+    <string name="create_account"><u>Create a new one.</u></string>
+    <string name="title_activity_client_home">Map</string>
+    <string name="title_activity_driver_home">Map</string>
+    <string name="title_activity_driver_approaching">Map</string>
+    <string name="title_activity_drive_to_destination">Map</string>'
+
+    <string name="open_drawer">Open Navigation Drawer</string>
+    <string name="close_drawer">Close Navigation Drawer</string>
+</resources>

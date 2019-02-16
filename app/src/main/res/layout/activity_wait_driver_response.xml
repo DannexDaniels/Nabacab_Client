@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".WaitDriverResponse"
+    android:id="@+id/clWaitDriverResponse">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Please wait for the driver to accept your request..."
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textAlignment="center"
+            android:id="@+id/tv2"/>
+        <com.mikhaellopez.circularprogressbar.CircularProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cpb_background_progressbar_color="@color/colorPrimary"
+            app:cpb_background_progressbar_width="20dp"
+            app:cpb_progressbar_color="@color/colorAccent"
+            app:cpb_progressbar_width="15dp"
+            android:id="@+id/cpTimeWait"
+            android:layout_below="@+id/tv2"
+            android:layout_margin="20dp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="60s"
+            android:textStyle="bold"
+            android:textSize="100dp"
+            android:textColor="#000"
+            android:layout_marginTop="180dp"
+            android:id="@+id/tvTimeCounterWait"/>
+
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>

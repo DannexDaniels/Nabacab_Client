@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SignUpUser"
+    android:id="@+id/clSignUpUser">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:src="@drawable/logo"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="3"
+                android:orientation="vertical">
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="10dp"
+                    android:drawableLeft="@drawable/ic_person_black_24dp"
+                    android:drawableStart="@drawable/ic_person_black_24dp"
+                    android:hint="Enter Full Names"
+                    android:background="@drawable/edit_text_back"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="20dp"
+                    android:id="@+id/etNamesUser"
+                    android:inputType="textPersonName"/>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="10dp"
+                    android:drawableLeft="@drawable/ic_call_black_24dp"
+                    android:drawableStart="@drawable/ic_call_black_24dp"
+                    android:hint="Enter Phone Number"
+                    android:background="@drawable/edit_text_back"
+                    android:layout_marginBottom="20dp"
+                    android:id="@+id/etPhoneUser"
+                    android:inputType="phone"/>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="10dp"
+                    android:drawableLeft="@drawable/ic_email_black_24dp"
+                    android:drawableStart="@drawable/ic_email_black_24dp"
+                    android:hint="Enter Email Address"
+                    android:background="@drawable/edit_text_back"
+                    android:layout_marginBottom="20dp"
+                    android:id="@+id/etEmailUser"
+                    android:inputType="textEmailAddress"/>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/textColor"
+                    android:id="@+id/btnSignUp"
+                    android:background="@drawable/submit_btn"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Create Account"
+                    android:onClick="createAccount"/>
+            </LinearLayout>
+        </LinearLayout>
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:id="@+id/pbSignUpUser"
+            android:visibility="gone"/>
+    </RelativeLayout>
+</android.support.constraint.ConstraintLayout>

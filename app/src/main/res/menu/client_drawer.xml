@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/cCab"
+            android:icon="@drawable/ic_local_taxi_black_24dp"
+            android:title="Get a Cab"/>
+        <item android:id="@+id/cAttraction"
+            android:icon="@drawable/ic_location_on_black_24dp"
+            android:title="Attraction Points"/>
+        <item android:id="@+id/cFind"
+            android:icon="@drawable/ic_search_black_24dp"
+            android:title="Find a Place"/>
+
+        <item android:title="Personal">
+            <menu>
+                <item
+                    android:id="@+id/cHistory"
+                    android:icon="@drawable/ic_history_black_24dp"
+                    android:title="Previous Rides" />
+                <item
+                    android:id="@+id/cProfile"
+                    android:icon="@drawable/ic_person_black_24dp"
+                    android:title="My Profile" />
+                <item
+                    android:id="@+id/cExit"
+                    android:icon="@drawable/ic_exit_to_app_black_24dp"
+                    android:title="Log out" />
+            </menu>
+        </item>
+    </group>
+
+</menu>
