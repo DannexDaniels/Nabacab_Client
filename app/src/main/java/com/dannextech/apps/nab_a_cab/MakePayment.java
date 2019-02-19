@@ -33,10 +33,13 @@ public class MakePayment extends AppCompatActivity {
     private ImageView ivMpesa, ivAirtel, ivCard, ivCash;
 
     private int paymentSelected = 0;
+    private String charges = null, payTo, payFrom, payId, requestId;
 
     private Alerts alert;
 
     private SharedPreferences pickup, request;
+
+    private JSONObject jsonObject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,72 @@ public class MakePayment extends AppCompatActivity {
         ivCard = findViewById(R.id.ivCreditCardSelected);
         ivCash = findViewById(R.id.ivCashSelected);
 
+        try {
+            jsonObject = new JSONObject(getIntent().getStringExtra("client"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        alert.showProgressDialog("","Loading...");
+        checkPayments();
+
+    }
+
+    private void checkPayments() {
+        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        String url = "http://dannextech.com/nabacab/Payments/check_payment";
+        StringRequest postRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                JSONObject jsonObject1 = null;
+                Log.e("ResponseResult", "res = "+response);
+                if (!response.equals("null")){
+                    try {
+                        alert.hideProgressDialog();
+                        jsonObject1 = new JSONObject(response);
+
+                        charges = jsonObject1.getString("pay_amount").trim();
+                        payFrom = "254"+Integer.parseInt(jsonObject1.getString("pay_by"));
+                        payTo = jsonObject1.getString("pay_to");
+                        payId = jsonObject1.getString("pay_id");
+                        requestId = jsonObject1.getString("pay_request");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }else {
+
+                    checkPayments();
+                }
+            }
+
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // error
+                Log.d("Error.ResponseResult", error.toString());
+                Snackbar.make(findViewById(R.id.clMakePayment), Html.fromHtml("<font color=\"#ffffff\">"+new Errors().volleyErrors(error)+"</font>"),Snackbar.LENGTH_LONG).show();
+                checkPayments();
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams()
+            {
+                Map<String, String>  params = new HashMap<String, String>();
+
+                try {
+                    params.put("id", jsonObject.getString("id"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                //params.put("id","REQ29728311");
+
+
+                return params;
+            }
+        };
+
+        queue.add(postRequest);
     }
 
     public void selectedPayment(View v){
@@ -119,33 +188,9 @@ public class MakePayment extends AppCompatActivity {
     public void makePayments(View view){
         switch (paymentSelected){
             case 1:
-                alert.showMessage("Payment","M-Pesa payment is yet to be implemented",new MakePayment());
-                /*alert.showProgressDialog("Processing","please wait");
-                //post my payment details
-                RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-                String url = "http://dannextech.com/nabacab/API/authenticate_user";
-                StringRequest postRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // response
-                        JSONObject jsonObject = null;
-                        Log.e("ResponseResult", response);
-                        try {
-                            jsonObject = new JSONObject(response);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                updatePayment("mpesa");
+                //alert.showMessage("Payment","M-Pesa payment is yet to be implemented",new MakePayment());
 
-                        alert.hideProgressDialog();
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        alert.hideProgressDialog();
-                        Log.e("Error.ResponseResult", error.toString());
-                        Snackbar.make(findViewById(R.id.clConfirmPickup), new Errors().volleyErrors(error), Snackbar.LENGTH_LONG).show();
-                    }
-                });*/
                 break;
             case 2:
                 alert.showMessage("Payment","Airtel Money payment is yet to be implemented",new MakePayment());
@@ -154,8 +199,8 @@ public class MakePayment extends AppCompatActivity {
                 alert.showMessage("Payment","Credit Card payment is yet to be implemented",new MakePayment());
                 break;
             case 4:
-                alert.showMessage("Payment","You will pay "+pickup.getString("cost","")+" to the driver"+request.getString("client",""),new ClientHome());
-                //makePayment("cash");
+                alert.showMessage("Payment","You will pay "+charges+" to the driver",new ClientHome());
+                updatePayment("cash");
                 break;
             default:
                 Snackbar.make(view,"Please select a payment option",Snackbar.LENGTH_LONG).show();
@@ -167,10 +212,10 @@ public class MakePayment extends AppCompatActivity {
         finish();
     }
 
-    public void makePayment(final String pmode){
+    public void updatePayment(final String pmode){
         //post my user details
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-        String url = "http://dannextech.com/nabacab/Payments/make_payment";
+        String url = "http://dannextech.com/nabacab/Payments/update_payment_status";
         StringRequest postRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>()
                 {
@@ -192,12 +237,19 @@ public class MakePayment extends AppCompatActivity {
 
                                 String status = jsonObject.getString("status");
                                 if (status.equals("OK")){
-                                    startActivity(new Intent(MakePayment.this, PaymentConfirmation.class));
+                                    SharedPreferences.Editor editor = getSharedPreferences("payment", MODE_PRIVATE).edit();
+                                    editor.putString("pay_id", payId);
+                                    editor.putString("request",requestId);
+                                    editor.apply();
+                                    if (pmode.equals("cash"))
+                                        startActivity(new Intent(MakePayment.this, PaymentConfirmation.class).putExtra("client",jsonObject.toString()));
+                                    else if (pmode.equals("mpesa"))
+                                        payMpesa();
                                 }
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
-                                Snackbar.make(findViewById(R.id.clSignUpUser), Html.fromHtml("<font color=\"#ffffff\">An error has occurred. Please try again</font>"),Snackbar.LENGTH_SHORT).show();
+                                Snackbar.make(findViewById(R.id.clMakePayment), Html.fromHtml("<font color=\"#ffffff\">An error has occurred. Please try again</font>"),Snackbar.LENGTH_SHORT).show();
                             }
                         }
                     }
@@ -209,7 +261,7 @@ public class MakePayment extends AppCompatActivity {
                         // error
                         Log.d("Error.ResponseResult", error.toString());
                         Snackbar.make(findViewById(R.id.clMakePayment), Html.fromHtml("<font color=\"#ffffff\">"+new Errors().volleyErrors(error)+"</font>"),Snackbar.LENGTH_LONG).show();
-
+                        updatePayment(pmode);
                     }
                 }
         ) {
@@ -217,11 +269,80 @@ public class MakePayment extends AppCompatActivity {
             protected Map<String, String> getParams()
             {
                 Map<String, String>  params = new HashMap<String, String>();
-                params.put("amount", pickup.getString("cost",""));
+                try {
+                    //params.put("amount", jsonObject.getString("charges"));
+                    params.put("id", jsonObject.getString("id"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                //params.put("id","REQ29728311");
                 params.put("mode", pmode);
-                params.put("client", request.getString("client",""));
-                params.put("driver", request.getString("driver",""));
-                params.put("id", request.getString("id",""));
+                params.put("user","client");
+                return params;
+            }
+        };
+        queue.add(postRequest);
+
+    }
+
+    private void payMpesa() {
+        alert.showProgressDialog("Processing","please wait");
+        //post my payment details
+        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        String url = "http://dannextech.com/nabacab/Payments/c2bPayment";
+        StringRequest postRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                // response
+                JSONObject jsonObject = null;
+                String responseCode = null, responseMessage = null;
+
+                alert.hideProgressDialog();
+                Log.e("ResponseResult", response);
+                try {
+                    jsonObject = new JSONObject(response);
+                    responseCode = jsonObject.getString("ResponseCode");
+                    responseMessage = jsonObject.getString("ResponseDescription");
+                    if (responseCode == null){
+                        responseCode = jsonObject.getString("errorCode");
+                        responseMessage = jsonObject.getString("errorMessage");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                if (jsonObject == null){
+                    Snackbar.make(findViewById(R.id.clMakePayment),Html.fromHtml("<font color=\"#ffffff\">An error has occurred. Please try again</font>"),Snackbar.LENGTH_SHORT).show();
+                }else {
+                    alert.showMessage("","Wait to enter your Mpesa Pin", new PaymentConfirmation());
+                    /*if (responseCode != null && responseCode.equals("0")){
+
+                    }else {
+                        Snackbar.make(findViewById(R.id.clMakePayment),Html.fromHtml("<font color=\"#ffffff\">An error has occurred: "+responseMessage+". Please try again</font>"),Snackbar.LENGTH_SHORT).show();
+                    }*/
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                alert.hideProgressDialog();
+                Log.e("Error.ResponseResult", error.toString());
+                Snackbar.make(findViewById(R.id.clMakePayment), new Errors().volleyErrors(error), Snackbar.LENGTH_LONG).show();
+                payMpesa();
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams()
+            {
+                Map<String, String>  params = new HashMap<String, String>();
+
+                params.put("phone", "254704040556");
+                params.put("cost", charges);
+                params.put("receipt", payTo);
+                params.put("pay_no", payId);
+                params.put("description","Taxi services");
                 return params;
             }
         };

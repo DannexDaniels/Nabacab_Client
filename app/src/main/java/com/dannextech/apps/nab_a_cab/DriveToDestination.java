@@ -15,6 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
@@ -82,8 +83,10 @@ public class DriveToDestination extends FragmentActivity implements OnMapReadyCa
     private TextView tvPhone, tvDestination, tvName;
     private Button btnStartJourney, btnFinishJourney,btnShowClientDetails;
     private LinearLayout llDriverDetails;
+    private Toolbar tbDriveToDestination;
 
-    private SharedPreferences locDet, client;
+
+    private SharedPreferences locDet, client, request;
 
     private LatLng dest = null;
     private JSONObject jsonObject1 = null;
@@ -107,7 +110,7 @@ public class DriveToDestination extends FragmentActivity implements OnMapReadyCa
         mapFragment.getMapAsync(this);
 
         if (!new Errors().isNetworkAvailable(getApplicationContext())){
-            Snackbar.make(findViewById(R.id.clSignUpUser),Html.fromHtml("<font color=\"#ffffff\">There is no internet connection. The app might not work properly</font>"), Snackbar.LENGTH_LONG).show();
+            Snackbar.make(findViewById(R.id.rlDriveToDestination),Html.fromHtml("<font color=\"#ffffff\">There is no internet connection. The app might not work properly</font>"), Snackbar.LENGTH_LONG).show();
         }
 
         counter = 0;
@@ -128,8 +131,11 @@ public class DriveToDestination extends FragmentActivity implements OnMapReadyCa
 
         llDriverDetails = findViewById(R.id.llClientDetails);
 
+        tbDriveToDestination = findViewById(R.id.toolbarDriveToDestination);
+
         client = getSharedPreferences("customer", MODE_PRIVATE);
         locDet = getSharedPreferences("request", MODE_PRIVATE);
+        request = getSharedPreferences("req", MODE_PRIVATE);
 
         tvPhone.setText(client.getString("phone",""));
         tvName.setText(client.getString("name",""));
@@ -158,6 +164,7 @@ public class DriveToDestination extends FragmentActivity implements OnMapReadyCa
         btnFinishJourney.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                addPayment();
                 journeyStatus("stop");
             }
         });
@@ -200,42 +207,7 @@ public class DriveToDestination extends FragmentActivity implements OnMapReadyCa
 
     }
 
-    /*LocationCallback mLocationCallback = new LocationCallback(){
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            super.onLocationResult(locationResult);
 
-            mMap.clear();
-
-            List<Location> locationList = locationResult.getLocations();
-            if (locationList.size() > 0) {
-
-                //The last location in the list is the newest
-                Location location = locationList.get(locationList.size() - 1);
-                Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
-                mLastLocation = location;
-                *//*if (mCurrLocationMarker != null) {
-                    mCurrLocationMarker.remove();
-                }*//*
-
-                //Place current location marker
-                final LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                maps.addMarker(dest,"Client Location", "Client");
-                maps.addMarker(latLng,"Current Position","Driver");
-
-
-
-                Log.e("Dannex Daniels", "onLocationResult: "+jsonObject1);
-                Log.e("Dannex Daniels", "distance: "+ locDet.getString("distance",""));
-
-                maps.calculateDirections(latLng,dest,true);
-
-                Snackbar.make(findViewById(R.id.rlDriveToDestination),Html.fromHtml("<font color=\"#ffffff\">Client is "+locDet.getString("duration","")+" away</font>"),Snackbar.LENGTH_SHORT).show();
-            }
-
-        }
-    };
-*/
     private void updateLocation(final LatLng latLng) {
         //post my location
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
@@ -304,7 +276,9 @@ public class DriveToDestination extends FragmentActivity implements OnMapReadyCa
                 Log.e("Dannex Daniels", "journey status: "+response);
                 if (status.equals("start")){
                     journeyStarted = true;
-                    btnStartJourney.setVisibility(View.GONE);
+                    llDriverDetails.setVisibility(View.GONE);
+                    btnShowClientDetails.setVisibility(View.GONE);
+                    tbDriveToDestination.setVisibility(View.GONE);
                     btnFinishJourney.setVisibility(View.VISIBLE);
                 }else if (status.equals("stop")){
                     startActivity(new Intent(DriveToDestination.this,WaitClientPayment.class));
@@ -426,7 +400,8 @@ public class DriveToDestination extends FragmentActivity implements OnMapReadyCa
 
         updateLocation(myLocation);
 
-        Snackbar.make(findViewById(R.id.rlDriveToDestination),Html.fromHtml("<font color=\"#ffffff\">Client is "+locDet.getString("duration","")+" away</font>"),Snackbar.LENGTH_SHORT).show();
+        if (!journeyStarted)
+            Snackbar.make(findViewById(R.id.rlDriveToDestination),Html.fromHtml("<font color=\"#ffffff\">Client is "+locDet.getString("duration","")+" away</font>"),Snackbar.LENGTH_SHORT).show();
     }
 
     public void calculateDirections(final LatLng orig, final LatLng dest) {
@@ -527,6 +502,69 @@ public class DriveToDestination extends FragmentActivity implements OnMapReadyCa
                 }
             }
         });
+    }
+
+    public void addPayment(){
+        //post my user details
+        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        String url = "http://dannextech.com/nabacab/Payments/make_payment";
+        StringRequest postRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        // response
+                        JSONObject jsonObject = null;
+                        Log.e("ResponseResult", response);
+                        try {
+                            jsonObject = new JSONObject(response);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (jsonObject == null){
+                            Snackbar.make(findViewById(R.id.clMakePayment),Html.fromHtml("<font color=\"#ffffff\">An error has occurred. Please try again</font>"),Snackbar.LENGTH_SHORT).show();
+                        }else {
+                            try {
+
+                                String status = jsonObject.getString("status");
+                                if (status.equals("OK")){
+                                    startActivity(new Intent(DriveToDestination.this, WaitClientPayment.class));
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                Snackbar.make(findViewById(R.id.clSignUpUser), Html.fromHtml("<font color=\"#ffffff\">An error has occurred. Please try again</font>"),Snackbar.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+                        Log.d("Error.ResponseResult", error.toString());
+                        Snackbar.make(findViewById(R.id.clMakePayment), Html.fromHtml("<font color=\"#ffffff\">"+new Errors().volleyErrors(error)+"</font>"),Snackbar.LENGTH_LONG).show();
+
+                    }
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams()
+            {
+                Map<String, String>  params = new HashMap<String, String>();
+                //params.put("amount", request.getString("charges",""));
+                params.put("amount","1");
+                params.put("mode", "not set");
+                params.put("client", request.getString("client_phone",""));
+                params.put("driver", request.getString("vehicle",""));
+                params.put("id", request.getString("reqid",""));
+                return params;
+            }
+        };
+        queue.add(postRequest);
+
     }
 
 

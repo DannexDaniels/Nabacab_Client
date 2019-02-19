@@ -131,6 +131,21 @@ public class DriverHome extends FragmentActivity implements OnMapReadyCallback {
                             try {
                                 jsonObject = new JSONObject(response);
                                 handler1.removeCallbacksAndMessages(null);
+
+                                SharedPreferences.Editor editor = getSharedPreferences("req", MODE_PRIVATE).edit();
+                                editor.putString("reqid", jsonObject.getString("id"));
+                                editor.putString("charges", jsonObject.getString("charges"));
+                                editor.putString("client", jsonObject.getString("client"));
+                                editor.putString("client_phone", jsonObject.getString("phone"));
+                                editor.putString("vehicle", jsonObject.getString("vehicle_no"));
+                                editor.putString("pickup", jsonObject.getString("pickup_loc"));
+                                editor.putString("destination", jsonObject.getString("destination"));
+                                editor.putString("origlatt", jsonObject.getString("origlatt"));
+                                editor.putString("origlong", jsonObject.getString("origlong"));
+                                editor.putString("destlatt", jsonObject.getString("destlatt"));
+                                editor.putString("destlong", jsonObject.getString("destlong"));
+                                editor.apply();
+
                                 startActivity(new Intent(DriverHome.this,NewRequestClient.class).putExtra("client",jsonObject.toString()));
                             } catch (JSONException e) {
                                 e.printStackTrace();

@@ -1,0 +1,13 @@
+package com.dannextech.apps.nab_a_cab;
+
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+
+public class CardPayment extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_card_payment);
+    }
+}

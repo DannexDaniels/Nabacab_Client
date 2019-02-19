@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.dannextech.apps.nab_a_cab">
 
     <!--
@@ -23,11 +24,7 @@
         <activity
             android:name=".MainActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".SignInUser"
@@ -70,18 +67,25 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".MakePayment"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
         <activity
             android:name=".DriveToDestination"
             android:label="@string/title_activity_drive_to_destination"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".WaitClientPayment"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
         <activity
             android:name=".PaymentConfirmation"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".NewRequestClient"></activity>
+        <activity android:name=".NewRequestClient" />
+        <activity android:name=".CardPayment">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

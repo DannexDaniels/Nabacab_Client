@@ -4,6 +4,96 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PaymentConfirmation">
+    tools:context=".PaymentConfirmation"
+    android:id="@+id/clPaymentConfirmation">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <android.support.v7.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/toolbar">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow_back_black_36dp"
+                    android:layout_margin="10dp"
+                    android:id="@+id/ivBackFinishJourney"
+                    android:onClick="goBackFinishJourney"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Payment Confirmation"
+                    android:textSize="24dp"
+                    android:textColor="#000"
+                    android:layout_margin="10dp"/>
+            </LinearLayout>
+
+        </android.support.v7.widget.Toolbar>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/logo"
+            android:id="@+id/logoWaitPayment"
+            android:layout_below="@id/toolbar"
+            android:layout_marginTop="20dp"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/llPaymentSuccess"
+            android:visibility="gone"
+            android:layout_below="@id/logoWaitPayment">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_check_circle_green_24dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="30dp"
+                android:text="Payment Successfull"
+                android:textSize="40dp"
+                android:textAlignment="center"
+                android:textStyle="bold"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/llPaymentFailed"
+            android:visibility="gone"
+            android:layout_below="@id/logoWaitPayment">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_cancel_black_24dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvPaymentFailed"
+                android:layout_margin="30dp"
+                android:text="Payment Failed"
+                android:textSize="40dp"
+                android:textAlignment="center"
+                android:textStyle="bold"/>
+        </LinearLayout>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/submit_btn"
+            android:layout_margin="20dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/textColor"
+            android:text="Confirm"
+            android:layout_alignParentBottom="true"
+            android:onClick="nextStep"/>
+    </RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>

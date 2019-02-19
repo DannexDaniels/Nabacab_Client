@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/toolbarDriveToDestination"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
@@ -112,16 +112,6 @@
             android:text="Start Journey"
             android:id="@+id/btnStartJourney"
             android:textColor="@color/textColor"/>
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@drawable/submit_btn"
-            android:layout_margin="20dp"
-            android:text="Finish Journey"
-            android:id="@+id/btnFinishJourney"
-            android:visibility="gone"
-            android:textColor="@color/textColor"/>
     </LinearLayout>
 
     <Button
@@ -135,5 +125,15 @@
         android:textColor="@color/textColor"
         android:onClick="showClientDetails"
         android:id="@+id/btnShowClient"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/submit_btn"
+        android:layout_margin="20dp"
+        android:text="Finish Journey"
+        android:id="@+id/btnFinishJourney"
+        android:visibility="gone"
+        android:textColor="@color/textColor"/>
 
 </RelativeLayout>

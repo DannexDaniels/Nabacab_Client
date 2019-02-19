@@ -16,14 +16,15 @@
             android:orientation="vertical">
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/ivCircle1"
                     android:background="@drawable/circle1"
                     android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true" />
+                    android:layout_marginTop="100dp"/>
                 <TextView
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
@@ -33,32 +34,30 @@
                     android:textColor="@color/textColor"
                     android:textStyle="bold"
                     android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"/>
+                    android:layout_marginTop="150dp"/>
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/ivCircle2"
                     android:background="@drawable/circle2"
                     android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:visibility="invisible"/>
+                    android:layout_marginTop="50dp"
+                    android:visibility="visible"/>
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/ivCircle3"
                     android:background="@drawable/circle3"
                     android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:visibility="invisible"/>
+
+                    android:visibility="visible"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/ivCircle3"
                     android:orientation="vertical"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginTop="100dp">
+                    android:layout_margin="20dp">
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -148,7 +147,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="3"
-                            android:text="Charges"
+                            android:text="Approximate Charges"
                             android:textColor="@color/textColor"
                             android:textAppearance="?android:attr/textAppearanceLarge"/>
                         <TextView
@@ -156,6 +155,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text=":"
+                            android:layout_gravity="center_vertical"
                             android:textColor="@color/textColor"
                             android:textAppearance="?android:attr/textAppearanceLarge"/>
                         <TextView
@@ -163,6 +163,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="5"
                             android:text="approximate cost"
+                            android:layout_gravity="center_vertical"
                             android:id="@+id/tvClientCharges"
                             android:textColor="@color/textColor"
                             android:textAppearance="?android:attr/textAppearanceLarge"/>

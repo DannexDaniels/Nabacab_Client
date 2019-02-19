@@ -36,11 +36,11 @@ dependencies {
     implementation 'com.google.maps.android:android-maps-utils:0.5'
     implementation 'com.google.maps:google-maps-services:0.2.11'
 
+    //implementation 'com.stripe:stripe-android:8.4.0'
 
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
 
     implementation 'com.mikhaellopez:circularprogressbar:2.0.0'
-
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

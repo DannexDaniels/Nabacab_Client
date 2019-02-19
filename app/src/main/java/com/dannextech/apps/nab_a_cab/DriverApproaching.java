@@ -17,6 +17,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
@@ -24,6 +25,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -91,6 +93,7 @@ public class DriverApproaching extends FragmentActivity implements OnMapReadyCal
     private Button btnCancelJourney, btnShowDriverDetails;
     private TextView tvPhone, tvName, tvVehicle, tvPlate;
     private LinearLayout llDriverDetails;
+    private Toolbar tbDriverApproaching;
 
     private Handler handler1;
 
@@ -112,7 +115,7 @@ public class DriverApproaching extends FragmentActivity implements OnMapReadyCal
         mapFragment.getMapAsync(this);
 
         if (!new Errors().isNetworkAvailable(getApplicationContext())){
-            Snackbar.make(findViewById(R.id.clSignUpUser),Html.fromHtml("<font color=\"#ffffff\">There is no internet connection. The app might not work properly</font>"), Snackbar.LENGTH_LONG).show();
+            Snackbar.make(findViewById(R.id.rlDriverApproaching),Html.fromHtml("<font color=\"#ffffff\">There is no internet connection. The app might not work properly</font>"), Snackbar.LENGTH_LONG).show();
         }
 
         handler1 = new Handler();
@@ -138,6 +141,8 @@ public class DriverApproaching extends FragmentActivity implements OnMapReadyCal
         tvVehicle = findViewById(R.id.tvVehicleType);
 
         llDriverDetails = findViewById(R.id.llDriverDetails);
+
+        tbDriverApproaching = findViewById(R.id.toolbarDriverApproaching);
 
         locDet = getSharedPreferences("request", MODE_PRIVATE);
 
@@ -260,10 +265,8 @@ public class DriverApproaching extends FragmentActivity implements OnMapReadyCal
 
                             if (finCounter == 0){
                                 calculateDirections(driverLoc,myLocation);
+                                Snackbar.make(findViewById(R.id.rlDriverApproaching),Html.fromHtml("<font color=\"#ffffff\">Driver is "+locDet.getString("duration","")+" away</font>"),Snackbar.LENGTH_SHORT).show();
                             }
-
-
-                            Snackbar.make(findViewById(R.id.rlDriverApproaching),Html.fromHtml("<font color=\"#ffffff\">Driver is "+locDet.getString("duration","")+" away</font>"),Snackbar.LENGTH_SHORT).show();
 
                             alerts.hideProgressDialog();
                         } catch (JSONException e) {
@@ -320,9 +323,10 @@ public class DriverApproaching extends FragmentActivity implements OnMapReadyCal
 
                                 if (jsonObject1.getString("journey_status").equals("finished")){
                                     handler1.removeCallbacksAndMessages(null);
-                                    startActivity(new Intent(DriverApproaching.this,MakePayment.class));
+                                    startActivity(new Intent(DriverApproaching.this,MakePayment.class).putExtra("client",jsonObject.toString()));
                                 }else if(jsonObject1.getString("journey_status").equals("started")){
                                     btnCancelJourney.setVisibility(View.GONE);
+                                    tbDriverApproaching.setVisibility(View.GONE);
 
                                     LatLng dest = new LatLng(Double.parseDouble(jsonObject.getString("destlatt")),Double.parseDouble(jsonObject.getString("destlong")));
                                     if (finCounter == 0){
@@ -333,6 +337,7 @@ public class DriverApproaching extends FragmentActivity implements OnMapReadyCal
                                                 .title("Driver's Location");
                                         destination = mMap.addMarker(userIndicator);
                                     }
+                                    finCounter++;
                                     calculateDirections(driverLoc,dest);
                                 }
                             } catch (JSONException e) {
